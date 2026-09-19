@@ -274,8 +274,10 @@ def main():
     with sync_playwright() as p:
         try:
             current_ip = get_current_ip(PROXY_SERVER)
-            log(f"🎯 出口IP: {current_ip}")
-
+            parts = current_ip.split('.')
+            masked_ip = '.'.join(parts[:3] + ['x']) if len(parts) == 4 else current_ip
+            log(f"🎯 出口IP: {masked_ip}")
+            
             log("🚀 启动浏览器...")
             browser = p.chromium.launch(
                 channel="chrome",
