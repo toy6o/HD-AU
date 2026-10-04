@@ -63,6 +63,18 @@ def get_current_ip(proxy_server=None):
         log(f"❌ 获取出口IP失败: {e}")
         return "获取失败"
 
+def mask_ip(ip):
+    """日志中的IP打码：IPv4 隐藏最后一段，IPv6 只保留前两段"""
+    ip = (ip or "").strip()
+    if "." in ip and ":" not in ip:
+        parts = ip.split(".")
+        if len(parts) == 4:
+            return ".".join(parts[:3] + ["x"])
+    if ":" in ip:
+        parts = ip.split(":")
+        return ":".join(parts[:2]) + ":****"
+    return ip
+
 def send_telegram_notification(status, old_due, new_due):
     """发送 Telegram 通知"""
     if not TG_BOT_TOKEN or not TG_CHAT_ID:
@@ -702,7 +714,7 @@ def main():
 
             # 获取当前出口ip
             current_ip = get_current_ip(PROXY_SERVER)
-            log(f"🎯 当前出口IP: {current_ip}")
+            log(f"🎯 当前出口IP: {mask_ip(current_ip)}")
 
             log("🚀 启动浏览器...")
             browser = p.chromium.launch(
