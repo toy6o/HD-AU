@@ -579,15 +579,15 @@ def renew_service(page):
         create_btn = page.locator('button:has-text("Create Invoice")')
 
         modal_opened = False
-        for i in range(6):
+        for i in range(3):
             try:
-                renew_btn.wait_for(state="visible", timeout=10000)
+                renew_btn.wait_for(state="visible", timeout=30000)
                 renew_btn.scroll_into_view_if_needed()
                 log(f"🖱️ 第 {i+1} 次尝试点击 'Renew'...")
                 renew_btn.click()
 
                 # 等待一小段时间，检测是否出现“未到续期时间”弹窗
-                time.sleep(2)
+                time.sleep(3)
                 page_text = page.locator("body").inner_text()
                 if "Renewal Restricted" in page_text or "can only renew" in page_text.lower():
                     log("⚠️ 未到续期时间，无法续期。")
@@ -596,7 +596,7 @@ def renew_service(page):
 
                 log("🖲️ 等待弹窗出现...")
                 try:
-                    create_btn.wait_for(state="visible", timeout=5000)
+                    create_btn.wait_for(state="visible", timeout=30000)
                     modal_opened = True
                     log("✅ 弹窗已成功弹出！")
                     break
@@ -607,7 +607,7 @@ def renew_service(page):
                         log("✅ 弹窗已弹出（先出现 Turnstile 验证）！")
                         break
                     log("⚠️ 弹窗未出现，可能是点击未响应，准备重试...")
-                    time.sleep(2)
+                    time.sleep(3)
             except Exception as e:
                 log(f"❌ 点击尝试出错: {e}")
 
